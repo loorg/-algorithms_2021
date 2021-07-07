@@ -1,0 +1,212 @@
+"""
+Задание 1.
+Реализуйте свои пользовательские функции, в которых реализуйте:
+a) заполнение списка и словаря,
+   сделайте замеры и сделайте выводы, что выполняется быстрее и почему
+   И укажите сложность каждой ф-ции, которую вы применяете для заполнения.
+   У этих ф-ций может быть разная сложность. Поэтому время заполнения списка и словаря может как совпадать, так и отличаться.
+b) выполните набор операций и со списком, и со словарем,
+   сделайте замеры и сделайте выводы, что и где выполняется быстрее и почему
+   И укажите сложность ф-ций, которые вы используете для операций.
+Подсказка: для замеров воспользуйтесь модулем time (см. примеры урока 1)
+Примечание: eсли вы уже знаете, что такое декоратор и как его реализовать,
+то реализуйте ф-цию-декоратор для подсчета времени работы ваших пользовательских функций
+И примените ее к своим функциям!
+Прошу вас внимательно читать ТЗ и не забыть выполнить все пункты.
+"""
+
+from time import time
+
+def work(func):
+    """Decorator for time calc"""
+    def inner_func(*args, **kwargs):
+        """Wrapper"""
+        start_t = time()
+        res = func(*args, **kwargs)
+        print(f'Runnig time of {func} is { time()-start_t}')
+        return res
+    return inner_func
+
+@work
+def create_lst(num):
+    """ list create"""
+    return  list(range(num))
+
+@work
+def compr_create_lst(num):
+    """List comprehensions"""
+    return {x for x in range(num)}
+
+@work
+def for_create_lst(num):
+    """Itteration list"""
+    my_lst = []
+    for i in range(num):
+        my_lst.append(i)
+    return my_lst
+
+@work
+def create_dict(num):
+    """Dict comprehensions"""
+    return {x:x for x in range(num)}
+
+@work
+def for_create_dict(num):
+    dict = {}
+    for i in range(num):
+        dict[i] = i
+    return dict
+
+@work
+def lst_reverse(lst):
+    lst.reverse()
+
+@work
+def lst_remove(lst, el):
+    lst.remove(el)
+
+@work
+def dict_get(dict, key):
+    return dict.get(key)
+
+@work
+def dict_pop(dict, key):
+    return dict.pop(key)
+
+if __name__ == '__main__':
+    lst_1 = create_lst(100000)
+    compr_create_lst(100000)
+    for_create_lst(100000)
+    dict_1 = create_dict(100000)
+    for_create_dict(100000)
+    lst_reverse(lst_1)
+    lst_remove(lst_1, 500)
+    dict_get(dict_1, 500)
+    dict_pop(dict_1, 500)
+    
+    
+    
+"""
+Задание 2.
+Ваша программа должна запрашивать пароль
+Для этого пароля вам нужно получить хеш, используя функцию sha256
+Для генерации хеша обязательно нужно использовать криптографическую соль
+Обязательно выведите созданный хеш.
+Далее программа должна запросить пароль повторно
+Вам нужно проверить, совпадает ли пароль с исходным
+Для проверки необходимо сравнить хеши паролей.
+Самый просто вариант хранения хешей - просто в оперативной памяти (в переменных).
+ПРИМЕР:
+Введите пароль: 123
+Вопрос: 555a3581d37993843efd4eba1921f1dcaeeeb8559655535d7c55782349444b
+Введите пароль еще раз для проверки: 123
+Вы ввели правильный пароль
+Обязательно усложните задачу! Добавьте сохранение хеша в файле и получение его из файла.
+А если вы знаете как через Python работать с БД, привяжите к заданию БД и сохраняйте хеши там.
+"""
+
+
+import hashlib
+from uuid import uuid4
+
+
+def hash(pass_hash, salt1, first=True):
+    pass_hash = hashlib.sha256(salt1.encode() + pass_hash.encode()).hexdigest()
+    if first:
+        print(f"Пароль задан, хеш пароля : {pass_hash}")
+        write_password(pass_hash)
+    else:
+        return pass_hash
+
+
+def write_password(pass_temp2):
+    with open('pass_hash.txt', 'w') as f:
+        f.write(pass_temp2)
+    print("Хеш пароля  записан.")
+
+
+def open_password():
+    with open('pass_hash.txt', 'r') as f:
+        open_password_temp = f.read()
+    return open_password_temp
+
+
+print("Здравствй путник")
+password = input("Секретное слово?: ")
+salt = uuid4().hex
+hash(password, salt)
+
+print("Повтори не расслышал.")
+second_password = input("Заходи дорогой: ")
+second_password = hash(second_password, salt, first=False)
+
+if open_password() == second_password:
+    print("ЗАходи мы тебя заждались")
+else:
+    print("Попробуй еще раз")
+    
+    
+    
+    
+    
+"""
+Задание 3.
+Определить количество различных (уникальных) подстрок с использованием хеш-функции.
+Дана строка S длиной N, состоящая только из строчных латинских букв.
+Подсказка: примените вычисление хешей для подстрок с помощью хеш-функций и множества
+Можно воспользоваться ф-цией hash() (см. материалы к уроку)
+Пример:
+рара - 6 уникальных подстрок
+рар
+ра
+ар
+ара
+р
+а
+"""
+
+
+
+
+def check(value):
+    result = set(hash(value[i:j]) for i in range(len(value)) for j in range(len(value)))
+    return result
+
+
+if __name__ == '__main__':
+    print(f"{check('papa')}\nCount of elements: {len(check('papa'))}")
+    
+    
+    
+
+
+
+"""
+Задание 4.
+Реализуйте скрипт "Кэширование веб-страниц"
+Функция должна принимать url-адрес и проверять
+есть ли в кэше соответствующая страница, если нет, то вносить ее в кэш
+Подсказка: задачу решите обязательно с применением 'соленого' хеширования и хеш-таблиц
+Можете условжнить задачу, реализовав ее через ООП
+Не забудьте, что кэширование - механизм, а хеш-таблица - средство его реализации.
+Задание творческое. Здесь нет жестких требований к выполнению.
+"""
+
+
+import hashlib
+from uuid import uuid4
+
+cache = dict()
+
+
+def cache_c(some_url, some_cache):
+    if some_url in some_cache:
+        return some_cache[some_url]
+    else:
+        salt = uuid4().hex
+        some_cache[some_url] = [(hashlib.sha256((some_url + salt).encode())).hexdigest(), salt]
+
+
+cache_c('https://vk.com', cache)
+cache_c('https://go.skillbox.ru/', cache)
+cache_c('https://yandex.ru/', cache)
