@@ -1,0 +1,250 @@
+"""
+1.	Пользователь вводит данные о количестве предприятий, их наименования и прибыль
+за 4 квартала (т.е. 4 отдельных числа) для каждого предприятия.
+Программа должна определить среднюю прибыль (за год для всех предприятий)
+и вывести наименования предприятий, чья прибыль выше среднего и отдельно
+вывести наименования предприятий, чья прибыль ниже среднего.
+Подсказка:
+Для решения задачи обязательно примените какую-нибудь коллекцию из коллекций модуля.
+Пример:
+Введите количество предприятий для расчета прибыли: 2
+Введите название предприятия: Фирма_1
+через пробел введите прибыль данного предприятия
+за каждый квартал(Всего 4 квартала): 235 345634 55 235
+Введите название предприятия: Фирма_2
+через пробел введите прибыль данного предприятия
+за каждый квартал(Всего 4 квартала): 345 34 543 34
+Средняя годовая прибыль всех предприятий: 173557.5
+Предприятия, с прибылью выше среднего значения: Фирма_1
+Предприятия, с прибылью ниже среднего значения: Фирма_2
+"""
+
+
+
+
+from collections import namedtuple
+from statistics import mean
+
+firms = namedtuple('firms', 'name earning')
+earning = {}
+
+firms_num = int(input('введите количество фирм'))
+for el in range(firms_num):
+    name = input('введите название фирмы: ')
+    firm_earning = list(map(int, input('Укажите доход по кварталам: ').split()))
+    firm = firms(name, firm_earning)
+    earning[firm.name] = round(mean(firm.earning))
+
+average = sum(earning.values()) / firms_num
+
+for key, val in earning.items():
+    if val < average:
+        print(f'{key} меньше среднего')
+    else:
+        print(f'{key} выше среднего')
+        
+        
+        
+        
+        
+"""
+2. Написать программу сложения и умножения двух шестнадцатиричных чисел.
+При этом каждое число представляется как массив, элементы которого это цифры числа.
+Например, пользователь ввёл A2 и C4F. Сохранить их как ['A', '2'] и ['C', '4', 'F'] соответственно.
+Сумма чисел из примера: ['C', 'F', '1'], произведение - ['7', 'C', '9', 'F', 'E'].
+Подсказка:
+Для решения задачи обязательно примените какую-нибудь коллекцию из коллекций модуля
+Для лучшее освоения материала можете даже сделать несколько решений этого задания,
+применив несколько коллекций из модуля collections
+Также попробуйте решить задачу вообще без collections и применить только ваши знания по ООП
+(в частности по перегрузке методов)
+__mul__
+__add__
+Пример:
+Например, пользователь ввёл A2 и C4F.
+Сохранить их как ['A', '2'] и ['C', '4', 'F'] соответственно.
+Сумма чисел из примера: ['C', 'F', '1']
+Произведение - ['7', 'C', '9', 'F', 'E'].
+1. вариант
+defaultdict(list)
+int(, 16)
+уменьшать
+2. вариант
+класс HexNumber:
+    __add__
+    __mul__
+hx = Шестигранный номер
+hx + hx
+шестигранный()
+"""
+
+
+
+from collections import defaultdict
+from functools import reduce
+
+# версия 1
+
+
+nums = defaultdict(list)
+nums[1] = list(input('Введите первое число: \n'))
+nums[2] = list(input('Введите второе число: \n'))
+
+sum = reduce(lambda x, y: int(''.join(x), 16) + int(''.join(y), 16),
+                 nums.values())
+mul = reduce(lambda x, y: int(''.join(x), 16) * int(''.join(y), 16),
+                 nums.values())
+print(f'Сумма чисел {"".join(nums[1]).upper()} и {"".join(nums[2]).upper()} '
+      f'равна: {"".join(list(hex(sum)[2:].upper()))}')
+print(f'Произведение чисел {"".join(nums[1]).upper()} и '
+      f'{"".join(nums[2]).upper()} равно: '
+      f'{"".join(list(hex(mul)[2:].upper()))}')
+
+# версия 2
+
+
+class HexNumber:
+    def __init__(self, num):
+        self.num = list(num)
+
+    def __add__(self, other):
+        return ''.join(list(hex(int(''.join(self.num), 16) +
+                                int(''.join(other.num), 16)))[2:]).upper()
+
+    def __mul__(self, other):
+        return ''.join(list(hex(int(''.join(self.num), 16) *
+                                int(''.join(other.num), 16)))[2:]).upper()
+
+
+hx = HexNumber('a2')
+hy = HexNumber('c4f')
+print('\nСумма и произведение чисел из примера через ООП')
+print(hx + hy)
+print(hx * hy)
+
+
+
+
+
+
+
+"""
+Задача 3.
+В соответствии с документацией Python,
+deque – это обобщение стеков и очередей.
+Вот основное правило: если вам нужно что-то быстро дописать или вытащить, используйте deque.
+Если вам нужен быстрый случайный доступ, используйте list.
+Задача:
+1) создайте простой список (list) и очередь (deque). Сделайте замеры и оцените что заполняется быстрее.
+2) Выполните различные операции с каждым из объектов. Сделайте замеры и оцените, где и какие операции быстрее.
+В первую очередь необходимо выполнить замеры для ф-ций appendleft, popleft, extendleft дека и для их аналогов у списков.
+"""
+
+from collections import deque
+from timeit import timeit
+
+simple_list = [el for el in range(100)]
+deque_list = deque([el for el in range(100)])
+
+copy_simple_list = simple_list.copy()
+copy_deque_list = deque(deque_list)
+
+print(f'{"~"*40}Time for creating{"~"*40}\n'
+      f'Simple list: {timeit("simple_list", globals=globals(), number=10)}\n'
+      f'Deque list: {timeit("deque_list", globals=globals(), number=10)}\n'
+      f'\n{"~"*40}Time for operating{"~"*40}\n'
+      f'Insert to simple list: {timeit("copy_simple_list.insert(0, 1)", globals=globals(), number=10)}\n'
+      f'Insert to deque list: {timeit("copy_deque_list.appendleft(1)", globals=globals(), number=10)}\n'
+      f'Pop from simple list: {timeit("copy_simple_list.pop(0)", globals=globals(), number=10)}\n'
+      f'Pop from deque list: {timeit("copy_deque_list.popleft()", globals=globals(), number=10)}\n'
+      f'Insert to end simple list: '
+      f'{timeit("copy_simple_list.extend(copy_simple_list)", globals=globals(), number=10)}\n'
+      f'Insert to end deque list: '
+      f'{timeit("copy_deque_list.extend(copy_deque_list)", globals=globals(), number=10)}\n'
+      f'Insert simple list: {timeit("copy_simple_list.insert(0, copy_simple_list)", globals=globals(), number=10)}\n'
+      f'Insert deque list: {timeit("copy_deque_list.extendleft(copy_deque_list)", globals=globals(), number=10)}\n')
+
+
+
+"""
+заполнение списка происходит быстрее чем очереди
+Simple list: 1.8999999999991246e-05
+Deque list: 1.599999999990498e-06
+
+вставка еденичено медлее чем вставка в очереди
+
+Insert to simple list: 4.900000000002125e-06
+Insert to deque list: 3.300000000011627e-06
+
+
+удаление через элемент быстрее чем по индексу
+Pop from simple list: 4.000000000004e-06
+Pop from deque list: 2.799999999997249e-06
+
+ в обоих случаях быстро, но  первый чуть быстрее.
+Insert to end simple list: 0.0012205000000000132
+Insert to end deque list: 0.002681600000000006
+
+в данном случае  первый вариант отработал значительно быстрее второго
+
+Insert simple list: 0.001192699999999991
+Insert deque list: 4.5376354999999995
+
+
+вывод:
+ 
+Deque полезна, если нужно работать с элементами в начале или конце очереди. 
+дополнительные возможности в виде reverse() и rotate(). Через Deque отлично можно реализвоать Kanban 
+и похожие задачи, в остальном лучше использовать lis
+"""
+
+
+
+"""
+Задача 4.
+Поработайте с обычным словарем и OrderedDict.
+Выполните операции с каждым их них (заполнение, получение элемента) и сделайте замеры.
+Опишите полученные результаты, сделайте выводы.
+И есть ли смысл исп-ть OrderedDict в Python 3.6 и более поздних версиях?
+"""
+
+
+from collections import OrderedDict
+from timeit import timeit
+
+order_dict = OrderedDict([(i, i) for i in range(100)])
+my_dict = {i: i for i in range(100)}
+
+print('Заполнение')
+print('order', timeit('order_dict = OrderedDict([(i, i) for i in range(100)])',
+                      globals=globals()))
+print('dict', timeit('my_dict= {i: i for i in range(100)}', globals=globals()))
+
+print('\nОбращение по ключу')
+print('order', timeit('order_dict[50]', globals=globals()))
+print('dict', timeit('my_dict[50]', globals=globals()))
+
+print('\nКопирование')
+print('order', timeit('order_dict.copy()', globals=globals()))
+print('dict', timeit('my_dict.copy()', globals=globals()))
+
+print('\nОбращение к элементам')
+print('order', timeit('order_dict.items()', globals=globals()))
+print('dict', timeit('my_dict.items()', globals=globals()))
+
+new1 = {i: i for i in range(1, 50)}
+print('\nОбновление')
+print('order', timeit('order_dict.update(new1)', globals=globals()))
+print('dict', timeit('my_dict.update(new1)', globals=globals()))
+
+"""
+вывод 
+воспользовавшись различными операциями в соврменно версии убедились
+что OrderedDict не выполняет на нужном уровне производительности
+
+
+"""
+        
+        
+        
+        
