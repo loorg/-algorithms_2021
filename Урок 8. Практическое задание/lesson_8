@@ -1,0 +1,132 @@
+"""
+Задание 1.
+Реализуйте кодирование строки "по Хаффману".
+У вас два пути:
+1) тема идет тяжело? тогда вы можете, опираясь на пример с урока, сделать свою!!! версию алгоритма
+Разрешается и приветствуется изменение имен переменных, выбор других коллекций, различные изменения
+и оптимизации.
+2) тема понятна? постарайтесь сделать свою реализацию.
+Вы можете реализовать задачу, например, через ООП или предложить иной подход к решению.
+"""
+
+
+import heapq
+from collections import defaultdict
+
+
+def huff_tree(freq):
+    heap = [[weight, [char, '']] for char, weight in freq.items()]
+    heapq.heapify(heap)
+    while len(heap) > 1:
+        left = heapq.heappop(heap)
+        right = heapq.heappop(heap)
+        for val in left[1:]:
+            val[1] = '0' + val[1]
+        for val in right[1:]:
+            val[1] = '1' + val[1]
+        heapq.heappush(heap, [left[0] + right[0]] + left[1:] + right[1:])
+    return sorted(heapq.heappop(heap)[1:], key=lambda x: (len(x[-1]), x))
+
+
+s_string = 'Encode a String in Huffman Coding Using Python'
+
+frequency = defaultdict(int)
+
+for chars in s_string:
+    frequency[chars] += 1
+
+res_tree = huff_tree(frequency)
+
+print("Char".ljust(10) + "Count".ljust(10) + "Huffman Code")
+for el in res_tree:
+    print(el[0].ljust(10) + str(frequency[el[0]]).ljust(10) + el[1])
+    
+    
+    
+    
+    
+    
+"""
+Задание 2.
+Доработайте пример структуры "дерево",
+рассмотренный на уроке.
+Предложите варианты доработки и оптимизации
+(например, валидация значений узлов в соответствии с требованиями для бинарного дерева).
+Поработайте с доработанной структурой, позапускайте на реальных данных - на клиентском коде.
+"""
+
+class BinaryTree:
+    def __init__(self, root_obj):
+        # корень
+        self.root = root_obj
+        # левый потомок
+        self.left_child = None
+        # правый потомок
+        self.right_child = None
+
+
+    def is_empty(self):
+        return self.root == self.left_child == self.right_child is None
+
+
+    def insert(self, root):
+        try:
+            if self.is_empty():
+                self.root = root
+                return
+            elif root < self.root:
+                if self.left_child is None:
+                    self.left_child = BinaryTree(root)
+                else:
+                    tree_obj = BinaryTree(root)
+                    tree_obj.left_child = self.left_child
+                    self.left_child = tree_obj
+            else:
+                if self.right_child is None:
+                    self.right_child = BinaryTree(root)
+                else:
+                    tree_obj = BinaryTree(root)
+                    tree_obj.right_child = self.right_child
+                    self.right_child = tree_obj
+        except TypeError:   # Перехват ошибок по типу вводимого значения
+            print('Введите целочисленное!!!')
+
+    # метод доступа к правому потомку
+    def get_right_child(self):
+        return self.right_child
+
+    # метод доступа к левому потомку
+    def get_left_child(self):
+        return self.left_child
+
+    # метод установки корня
+    def set_root_val(self, obj):
+        self.root = obj
+
+    # метод доступа к корню
+    def get_root_val(self):
+        return self.root
+
+    def __str__(self):
+        return '[%s, %s, %s]' % (self.left_child, str(self.root),
+                                 self.right_child)
+
+
+
+my_tree = BinaryTree(8)
+my_tree.insert(2)
+my_tree.insert(11)
+my_tree.insert(14)
+my_tree.insert(5)
+my_tree.insert(9)
+my_tree.insert(10)
+my_tree.insert(3)
+my_tree.insert(7)
+my_tree.insert("value")
+print(my_tree.get_root_val())
+print(my_tree.get_left_child())
+print(my_tree.get_right_child())
+print(my_tree)
+
+#улучшение кода было в ведение самоанализа для автоматизированного вставления влево и направо
+#
