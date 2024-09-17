@@ -1,0 +1,358 @@
+"""
+Задание 1.
+Для каждой из трех функций выполнить следующее:
+1) для каждого выражения вместо !!! укажите сложность этого выражения.
+2) определите сложность каждой функции в целом.
+Сложность нужно определять только там, где указаны символы !!!
+Примечание:
+Прошу вас внимательно читать ТЗ и не выполнять все пункты.
+"""
+
+import random
+
+
+#############################################################################################
+def check_1(lst_obj):
+    """Функция должна создать множество из списка.
+    Алгоритм 3:
+    Создать множество из списка
+    Сложность: O(n)
+    """
+    lst_to_set = set(lst_obj)  # O(N)
+    return lst_to_set  # O(1)
+
+
+#############################################################################################
+def check_2(lst_obj):
+    """Функция должная вернуть True, если все элементы списка различаются.
+    Алгоритм 1:
+    Проходимся по списку и для каждого элемента проверяем,
+    что такой элемент отстутствует
+    в оставшихся справа элементах
+    Сложность: #O(N^2)
+    """
+    for j in range(len(lst_obj)):          # O(N)
+        if lst_obj[j] in lst_obj[j+1:]:    # O(N)
+            return False                   # O(1)
+    return True                            # O(1)
+
+
+#############################################################################################
+def check_3(lst_obj):
+    """Функция должная вернуть True, если все элементы списка различаются.
+    Алгоритм 2:
+    Вначале выполним для списка сортировку, далее, сравниваем элементы попарно
+    Если присутствуют дубли, они будут находиться рядом.
+    Сложность: !!!
+    """
+    lst_copy = list(lst_obj)                 # O(N)
+    lst_copy.sort()                          # O(N*log)
+    for i in range(len(lst_obj) - 1):        # O(N)
+        if lst_copy[i] == lst_copy[i+1]:     # O(1)
+            return False                     # O(1)
+    return True                              # O(1)
+
+#############################################################################################
+
+
+for j in (50, 500, 1000, 5000, 10000):
+    # Из 100000 чисел возьмем 'j' случайно выбранных
+    # Всего 10 тыс. чисел
+    lst = random.sample(range(-100000, 100000), j)
+
+print(check_1(lst))
+print(check_2(lst))
+print(check_3(lst))
+
+
+
+
+
+
+
+"""
+Задание 2.
+Реализуйте два алгоритма.
+Первый, в виде функции, должен обеспечивать поиск минимального значения для списка.
+В основе алгоритма должно быть сравнение каждого числа со всеми другими элементами списка.
+Сложность такого алгоритма: O(n^2) - квадратичная.
+Второй, в виде функции, должен обеспечивать поиск минимального значения для списка.
+Сложность такого алгоритма: O(n) - линейная.
+Не забудьте указать сложность каждого из двух алгоритмов. Для лучшего закрепления темы
+можете определить и указать сложность еще и у каждого выражения этих двух алгоритмов.
+Примечание:
+Прошу вас внимательно читать ТЗ и не забыть выполнить все пункты.
+Постарайтесь не использовать ф-ции min() и sort() и другие ф-ции!
+Подход должен быть максимально алгоритмическим.
+"""
+
+
+def min1(lst):
+
+                                     # Сложность: O(N^2)
+
+    min_number = lst[0]              # O(1)
+    min_iter = lst[0]
+    for el1 in lst:                  # O(N)
+        for el2 in lst:              # O(N)
+            if el1 < el2:            # O(1)
+                min_iter = el1       # O(1)
+        if min_iter < min_number:    # O(1)
+            min_number = min_iter    # O(1)
+    return min_number  # O(1)
+
+
+def min2(lst):
+
+                                     # Сложность: O(N)
+
+    min_number = lst[0]              # O(1)
+    for el in lst:                   # O(N)
+        if el < min_number:          # O(1)
+            min_number = el          # O(1)
+    return min_number                # O(1)
+
+
+print(min1([5, 20, 40, 45, 201, 105]))
+print(min2([3, 14, 17, 121, 223, 534]))
+
+
+
+
+
+"""
+Задание 3.
+Для этой задачи:
+1) придумайте 2-3 решения (не менее двух) разной!! сложности
+2) оцените сложность каждого решения в нотации О-большое
+3) сделайте вывод, какое решение эффективнее и почему
+Сама задача:
+Имеется хранилище с информацией о компаниях: название и годовая прибыль.
+Для реализации хранилища можно применить любой подход,
+который вы придумаете, например, реализовать словарь.
+Реализуйте поиск трех компаний с наибольшей годовой прибылью.
+Выведите результат.
+Примечание:
+Без выполнения пунктов 2 и 3 задание считается нерешенным. Пункты 2 и 3 можно выполнить
+через строки документации в самом коде.
+Прошу вас внимательно читать ТЗ и не забыть выполнить все пункты.
+Задание творческое. Здесь нет жестких требований к выполнению.
+"""
+
+
+
+pro_dict = {'сталкер': 2000, 'свет': 5000, 'воронка': 1000, 'жар': 400, 'AK': 4500, 'мельница': 3000}
+
+
+def max_1(use_dict):
+
+                                                                #Сложность: O(N*logN)
+
+    sorted_keys = sorted(use_dict, key=use_dict.__getitem__, reverse=True)  # O(N*logN)
+    max_pro_dict = {}                                           # O(1)
+    for n in range(0, 5):                                       # O(1) - так как известно, что будет только 3 повтора
+        key = sorted_keys[n]                                    # O(1)
+        value = use_dict[key]                                   # O(1)
+        max_pro_dict.update({key: value})                       # O(1) - на каждой итерации добавляем одно значение
+    print(max_pro_dict)                                         # O(1)
+
+
+def max_2(use_dict):
+    """
+    Сложность: O(N)
+    """
+    temp = dict.copy(use_dict)                       # O(N)
+    max_pro_dict = {}                                # O(1)
+    max_key = 0                                      # O(1)
+    for i in range(1, 5):                            # O(1)
+        max_value = 0                                # O(1)
+        for key in temp:                             # O(N)
+            if temp[key] > max_value:                # O(1)
+                max_key = key                        # O(1)
+                max_value = temp[key]                # O(1)
+        max_pro_dict.update({max_key: max_value})    # O(1)
+        temp.pop(max_key)                            # O(N)
+    print(max_pro_dict)                              # O(1)
+
+
+max_1(pro_dict)
+max_2(pro_dict)
+
+
+
+
+# Сложность O(N)
+def authorizat1 (user, user_log, user_password):
+    for key, value in user.items():
+        if key == user_log:
+            if value ['password'] == user_password and value ['Activ']:
+                return "  Здравствуй путник, вход разрешон"
+            elif value ['password'] == user_password \
+                    and not value ['Activ']:
+                return " Тебя нет в списке"
+            elif value ['password'] != user_password:
+                return "Не раслышал, может другой пароль?"
+    return "Увы, схватить чужестранца"
+
+
+#Cложность O(1)
+
+def authorizat2 (user, user_log, user_password):
+    if user.get(user_log):
+        if user[user_log]['password'] == user_password \
+               and user[user_log]['ACTIV']:
+            return "  Здравствуй путник, вход разрешон"
+        elif user[user_log]['password'] == user_password \
+                and not user[user_log]['ACTIV']:
+              return " Тебя нет в списке"
+        elif user[user_log]['password'] != user_password \
+                and user[user_log]['ACTIV']:
+
+             return "Не раслышал, может другой пароль?"
+    else:
+        return "Увы, схватить чужестранца"
+        
+        
+        
+"""
+Задание 5.
+Задание на закрепление навыков работы со стеком
+Реализуйте структуру "стопка тарелок".
+Мы можем складывать тарелки в стопку и при превышении некоторого значения
+нужно начать складывать тарелки в новую стопку.
+Структура должна предусматривать наличие нескольких стеков.
+Создание нового стека происходит при достижении предыдущим стеком порогового значения.
+Реализуйте по аналогии с примером, рассмотренным на уроке, необходимые методы,
+для реализации это структуры, добавьте новые методы (не рассмотренные в примере с урока)
+для реализации этой задачи.
+После реализации структуры, проверьте ее работу на различных сценариях
+Подсказка:
+Отдельне стопки можно реализовать через:
+1) созд-е экземпляров стека (если стопка - класс)
+или
+2) lst = [[], [], [], [],....]
+Примечание: в этом задании вспомните ваши знания по работе с ООП
+и опирайтесь на пример урока
+Прошу вас внимательно читать ТЗ и не забыть выполнить все пункты.
+Задание творческое. Здесь нет жестких требований к выполнению.
+"""
+
+
+
+class PlateStacks:
+    def __init__(self):
+        self.plates = [[]]
+        self.max_plate = 6
+        self.current_stack = 0
+
+    def is_empty(self):
+        return self.plates == [[]]
+
+    def put_in_stack(self, el):
+        if len(self.plates[self.current_stack]) == self.max_plate:
+            self.plates.append([])
+            self.current_stack += 1
+            self.plates[self.current_stack].append(el)
+        else:
+            self.plates[self.current_stack].append(el)
+
+    def get_from_stack(self):
+        taken_plates = self.plates[self.current_stack].pop()
+        if len(self.plates[self.current_stack]) == 0:
+            self.plates.pop()
+            self.current_stack -= 1
+        return taken_plates
+
+    def placed_last(self):
+        return self.plates[self.current_stack][len(self.plates[self.current_stack]) - 1]
+
+    def stack_size(self):
+        return len(self.plates[self.current_stack])
+
+    def plates_total(self):
+        plates = self.max_plate * (len(self.plates) - 1) + len(self.plates[self.current_stack])
+        return plates
+
+
+if __name__ == '__main__':
+    stacks_of_plate = PlateStacks()
+
+    print(stacks_of_plate.is_empty())
+
+
+    stacks_of_plate.put_in_stack(1)
+    stacks_of_plate.put_in_stack(2)
+    stacks_of_plate.put_in_stack(3)
+    stacks_of_plate.put_in_stack(4)
+    stacks_of_plate.put_in_stack(5)
+    stacks_of_plate.put_in_stack(6)
+
+
+
+    print(stacks_of_plate.placed_last())
+    print(stacks_of_plate.stack_size())
+    print(stacks_of_plate.is_empty())
+    print(stacks_of_plate.plates_total())
+    
+    
+    
+    
+    
+    
+    
+    """
+Задание 7.
+Задание на закрепление навыков работы с деком
+В рассмотренном на уроке листинге есть один недостаток
+Приведенный код способен "обработать" только строку без пробелов, например, 'топот'
+Но могут быть и такие палиндромы, как 'молоко делили ледоколом'
+Вам нужно доработать программу так, чтобы она могла выполнить проверку на палиндром
+и в таких строках (включающих пробелы)
+Примечание:
+Вам не нужно писать код с нуля. Вам нужно доработать пример с урока.
+"""
+
+
+class DequeClass:
+    def __init__(self):
+        self.elems = []
+
+    def is_empty(self):
+        return self.elems == []
+
+    def add_to_front(self, elem):
+        self.elems.append(elem)
+
+    def add_to_rear(self, elem):
+        self.elems.insert(0, elem)
+
+    def remove_from_front(self):
+        return self.elems.pop()
+
+    def remove_from_rear(self):
+        return self.elems.pop(0)
+
+    def size(self):
+        return len(self.elems)
+
+
+def pal_checker(string):
+    dc_obj = DequeClass()
+    string = string.replace(" ", "")  #
+    new_string = string.replace(' ', '')
+    for el in new_string:
+        dc_obj.add_to_rear(el)
+
+    still_equal = True
+
+    while dc_obj.size() > 1 and still_equal:
+        first = dc_obj.remove_from_front()
+        last = dc_obj.remove_from_rear()
+        if first != last:
+            still_equal = False
+
+    return still_equal
+
+
+
+print(pal_checker("молоко делили ледоколом"))
